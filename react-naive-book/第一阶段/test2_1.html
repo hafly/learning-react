@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0">
+    <meta name="renderer" content="webkit">
+    <title>前端组件化（一）：从一个简单的例子讲起</title>
+</head>
+<body>
+<!--这样的实现方式没有任何可复用性。-->
+<div class='wrapper'>
+    <button class='like-btn'>
+        <span class='like-text'>点赞</span>
+        <span>👍</span>
+    </button>
+</div>
+<script>
+    const button = document.querySelector('.like-btn')
+    const buttonText = button.querySelector('.like-text')
+    let isLiked = false
+    button.addEventListener('click', () => {
+        isLiked = !isLiked
+        if (isLiked) {
+            buttonText.innerHTML = '取消'
+        } else {
+            buttonText.innerHTML = '点赞'
+        }
+    }, false)
+</script>
+</body>
+</html>

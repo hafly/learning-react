@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0">
+    <meta name="renderer" content="webkit">
+    <title>前端组件化（二）：优化 DOM 操作</title>
+</head>
+<body>
+<!--状态改变 -> 构建新的 DOM 元素更新页面-->
+<!--这里要提出的一种解决方案：一旦状态发生改变，就重新调用 render 方法，构建一个新的 DOM 元素。-->
+<div class='wrapper'></div>
+<script>
+    const createDOMFromString = (domString) => {
+        const div = document.createElement('div')
+        div.innerHTML = domString
+        return div
+    }
+
+    class LikeButton {
+        constructor () {
+            this.state = { isLiked: false }
+        }
+
+        // 只要调用 setState，组件就会重新渲染。顺利地消除了手动的 DOM 操作。
+        setState (state) {
+            this.state = state
+            this.el = this.render()
+            // 重新渲染的 DOM 元素并没有插入到页面当中。
+            // 所以在这个组件外面，你需要知道这个组件发生了改变，并且把新的 DOM 元素更新到页面当中。
+        }
+
+        changeLikeText () {
+            this.setState({
+                isLiked: !this.state.isLiked
+            })
+        }
+
+        render () {
+            this.el = createDOMFromString(`
+        <button class='like-btn'>
+          <span class='like-text'>${this.state.isLiked ? '取消' : '点赞'}</span>
+          <span>👍</span>
+        </button>
+      `)
+            this.el.addEventListener('click', this.changeLikeText.bind(this), false)
+            return this.el
+        }
+    }
+
+    const wrapper = document.querySelector('.wrapper')
+
+    const likeButton = new LikeButton()
+    wrapper.appendChild(likeButton.render())
+</script>
+</body>
+</html>

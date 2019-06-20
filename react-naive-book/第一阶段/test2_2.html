@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0">
+    <meta name="renderer" content="webkit">
+    <title>前端组件化（一）：从一个简单的例子讲起</title>
+</head>
+<body>
+<!--结构复用，实现简单组件化-->
+<div class='wrapper'></div>
+<script>
+    const createDOMFromString = (domString) => {
+        const div = document.createElement('div')
+        div.innerHTML = domString
+        return div
+    }
+
+    class LikeButton {
+        constructor () {
+            this.state = { isLiked: false }
+        }
+
+        changeLikeText () {
+            const likeText = this.el.querySelector('.like-text')
+            this.state.isLiked = !this.state.isLiked
+            likeText.innerHTML = this.state.isLiked ? '取消' : '点赞'
+        }
+
+        render () {
+            this.el = createDOMFromString(`
+        <button class='like-button'>
+          <span class='like-text'>点赞</span>
+          <span>👍</span>
+        </button>
+      `)
+            this.el.addEventListener('click', this.changeLikeText.bind(this), false)
+            return this.el
+        }
+    }
+
+    const wrapper = document.querySelector('.wrapper')
+
+    // 因为现在 render 返回的是 DOM 元素，所以不能用 innerHTML 暴力地插入 wrapper。而是要用 DOM API 插进去。
+    const likeButton1 = new LikeButton()
+    wrapper.appendChild(likeButton1.render())
+
+    const likeButton2 = new LikeButton()
+    wrapper.appendChild(likeButton2.render())
+</script>
+</body>
+</html>

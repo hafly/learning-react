@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0">
+    <meta name="renderer" content="webkit">
+    <title>前端组件化（三）：抽象出公共组件类</title>
+</head>
+<body>
+<!--为了让代码更灵活，可以写更多的组件，我们把这种模式抽象出来，放到一个 Component 类当中。-->
+<div class='wrapper'></div>
+<script>
+    // 创建DOM元素
+    const createDOMFromString = (domString) => {
+        const div = document.createElement('div')
+        div.innerHTML = domString
+        return div
+    }
+
+    // 组件父类，所有的组件都可以继承这个父类来构建
+    class Component {
+        setState (state) {
+            const oldEl = this.el // 旧的元素（需要删除）
+            this.state = state
+            this._renderDOM()
+            if (this.onStateChange) this.onStateChange(oldEl, this.el)
+        }
+
+        // 构建 DOM 元素并且监听 onClick 事件
+        _renderDOM () {
+            this.el = createDOMFromString(this.render())
+            if (this.onClick) {
+                this.el.addEventListener('click', this.onClick.bind(this), false)
+            }
+            return this.el
+        }
+    }
+
+    // 把组件的 DOM 元素插入页面，并且在 setState 的时候更新页面
+    const mount = (component, wrapper) => {
+        wrapper.appendChild(component._renderDOM())
+        component.onStateChange = (oldEl, newEl) => {
+            wrapper.insertBefore(newEl, oldEl)
+            wrapper.removeChild(oldEl)
+        }
+    }
+
+    // 继承自 Component
+    class LikeButton extends Component {
+        constructor () {
+            super()
+            this.state = { isLiked: false }
+        }
+
+        onClick () {
+            this.setState({
+                isLiked: !this.state.isLiked
+            })
+        }
+
+        render () {
+            return `
+        <button class='like-btn'>
+          <span class='like-text'>${this.state.isLiked ? '取消' : '点赞'}</span>
+          <span>👍</span>
+        </button>
+      `
+        }
+    }
+
+    const wrapper = document.querySelector('.wrapper')
+
+    mount(new LikeButton(), wrapper)
+</script>
+<!--这样还不够好。在实际开发当中，你可能需要给组件传入一些自定义的配置数据。-->
+<!--所以我们可以给组件类和它的子类都传入一个参数 props，作为组件的配置参数。-->
+</body>
+</html>
