@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0">
+    <meta name="renderer" content="webkit">
+    <title>动手实现 Redux（四）：共享结构的对象提高性能</title>
+</head>
+<body>
+<!--本章是重难点-->
+<!--在每个渲染函数执行渲染操作之前先做个判断，判断传入的新数据和旧的数据是不是相同，相同的话就不渲染了-->
+
+<!--共享结构的对象
+const obj = { a: 1, b: 2}
+const obj2 = { ...obj } // => { a: 1, b: 2 }
+const obj2 = { ...obj } 其实就是新建一个对象 obj2，然后把 obj 所有的属性都复制到 obj2 里面，相当于对象的浅复制。
+上面的 obj 里面的内容和 obj2 是完全一样的，但是却是两个不同的对象。除了浅复制对象，还可以覆盖、拓展对象属性：
+const obj = { a: 1, b: 2}
+const obj2 = { ...obj, b: 3, c: 4} // => { a: 1, b: 3, c: 4 }，覆盖了 b，新增了 c
+-->
+<div id='title'></div>
+<div id='content'></div>
+<script>
+    function createStore (state, stateChanger) {
+        const listeners = []
+        const subscribe = (listener) => listeners.push(listener)
+        const getState = () => state
+        const dispatch = (action) => {
+            state = stateChanger(state, action) // 覆盖原对象！
+            listeners.forEach((listener) => listener())
+        }
+        return { getState, dispatch, subscribe }
+    }
+
+    let appState = {
+        title: {
+            text: 'React.js 小书',
+            color: 'red',
+        },
+        content: {
+            text: 'React.js 小书内容',
+            color: 'blue'
+        }
+    }
+
+    // 修改数据的时候，并不会直接修改原来的数据 state，而是产生上述的共享结构的对象，并返回state
+    function stateChanger (state, action) {
+        switch (action.type) {
+            case 'UPDATE_TITLE_TEXT':
+                // 使用 {} 浅复制，覆盖。这样返回的是新对象
+                return { // 构建新的对象并且返回
+                    ...state,
+                    title: {
+                        ...state.title,
+                        text: action.text
+                    }
+                }
+            case 'UPDATE_TITLE_COLOR':
+                return { // 构建新的对象并且返回
+                    ...state,
+                    title: {
+                        ...state.title,
+                        color: action.color
+                    }
+                }
+            default:
+                return state // 没有修改，返回原来的对象
+        }
+    }
+
+    function renderApp (newAppState, oldAppState = {}) { // 防止 oldAppState 没有传入，所以加了默认参数 oldAppState = {}
+        if (newAppState === oldAppState) return // 数据没有变化就不渲染了
+        console.log('render app...')
+        renderTitle(newAppState.title, oldAppState.title)
+        renderContent(newAppState.content, oldAppState.content)
+    }
+
+    function renderTitle (newTitle, oldTitle = {}) {
+        if (newTitle === oldTitle) return // 数据没有变化就不渲染了
+        console.log('render title...')
+        const titleDOM = document.getElementById('title')
+        titleDOM.innerHTML = newTitle.text
+        titleDOM.style.color = newTitle.color
+    }
+
+    function renderContent (newContent, oldContent = {}) {
+        if (newContent === oldContent) return // 数据没有变化就不渲染了
+        console.log('render content...')
+        const contentDOM = document.getElementById('content')
+        contentDOM.innerHTML = newContent.text
+        contentDOM.style.color = newContent.color
+    }
+
+    const store = createStore(appState, stateChanger)
+    let oldState = store.getState() // 缓存旧的 state
+    store.subscribe(() => {
+        const newState = store.getState() // 数据可能变化，获取新的 state
+        renderApp(newState, oldState) // 把新旧的 state 传进去渲染
+        oldState = newState // 渲染完以后，新的 newState 变成了旧的 oldState，等待下一次数据变化重新渲染
+    })
+
+    renderApp(store.getState()) // 首次渲染页面
+    store.dispatch({ type: 'UPDATE_TITLE_TEXT', text: '《React.js 小书》' }) // 修改标题文本
+    store.dispatch({ type: 'UPDATE_TITLE_COLOR', color: 'blue' }) // 修改标题颜色
+</script>
+</body>
+</html>
