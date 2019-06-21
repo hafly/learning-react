@@ -2,9 +2,16 @@ import React, { Component } from 'react';
 import ReactDOM from 'react-dom';
 
 class Title extends Component {
+    handleClickOnTitle (e) {
+        console.log(e.target.innerHTML);
+        // 如果你想在事件函数当中使用当前的实例，你需要手动地将实例方法 bind 到当前实例上再传入给 React.js
+        console.log(this);
+    }
+
     render () {
         return (
-            <h1>React 小书</h1>
+            // 最好在 constructor 中绑定事件
+            <h1 onClick={this.handleClickOnTitle.bind(this)}>React 小书</h1>
         )
     }
 }
