@@ -1,54 +1,56 @@
 import React,{Component} from 'react'
 import ReactDOM from 'react-dom'
 
-class Header extends Component {
+// 时钟
+class Clock extends Component {
     constructor () {
         super()
-        console.log('construct')
+        this.state = {
+            date: new Date()
+        }
     }
 
     componentWillMount () {
-        console.log('component will mount')
+        this.timer = setInterval(() => {
+            this.setState({ date: new Date() })
+        }, 1000)
     }
 
-    componentDidMount () {
-        console.log('component did mount')
-    }
-
-    componentWillUnmount(){
-        console.log('component will unmount')
+    componentWillUnmount () {
+        // 组件卸载的时候一定要清除this.timer
+        clearInterval(this.timer)
     }
 
     render () {
-        console.log('render')
         return (
             <div>
-                <h1 className='title'>React 小书</h1>
+                <h1>
+                    <p>现在的时间是</p>
+                    {this.state.date.toLocaleTimeString()}
+                </h1>
             </div>
         )
     }
 }
 
 class Index extends Component {
-    constructor() {
+    constructor () {
         super()
-        this.state = {
-            isShowHeader: true
-        }
+        this.state = { isShowClock: true }
     }
 
     handleShowOrHide () {
         this.setState({
-            isShowHeader: !this.state.isShowHeader
+            isShowClock: !this.state.isShowClock
         })
     }
 
     render () {
         return (
             <div>
-                {this.state.isShowHeader ? <Header /> : null}
+                {this.state.isShowClock ? <Clock /> : null }
                 <button onClick={this.handleShowOrHide.bind(this)}>
-                    显示或者隐藏标题
+                    显示或隐藏时钟
                 </button>
             </div>
         )
