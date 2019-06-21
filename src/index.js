@@ -2,33 +2,77 @@ import React, {Component} from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
 
-// class HelloWorld extends Component {
-//     constructor() {
-//         super()
-//     }
-//
-//     sayHi () {
-//         alert('Hello World')
-//     }
-//
-//     render () {
-//         return (
-//             <div onClick={this.sayHi.bind(this)}>Hello World</div>
-//         )
-//     }
-// }
+const users = [
+    {username: 'Jerry', age: 21, gender: 'male'},
+    {username: 'Tomy', age: 22, gender: 'male'},
+    {username: 'Lily', age: 19, gender: 'female'},
+    {username: 'Lucy', age: 20, gender: 'female'}
+]
 
-// 函数式组件只能接受 props 而无法像跟类组件一样可以在 constructor 里面初始化 state。
-// 你可以理解函数式组件就是一种只能接受 props 和提供 render 方法的类组件。
-const HelloWorld = (props) => {
-    console.log(props);
-    const sayHi = (event) => alert('Hello World')
-    return (
-        <div onClick={sayHi}>Hello World</div>
-    )
+class User extends Component {
+    render() {
+        const {user} = this.props;
+        console.log(this.props);
+        console.log(user);
+        return (
+            <div>
+                <div>姓名：{user.username}</div>
+                <div>年龄：{user.age}</div>
+                <div>性别：{user.gender}</div>
+                <hr/>
+            </div>
+        )
+    }
+}
+
+class Index extends Component {
+    render() {
+        // 方法一
+        // const usersElements = [] // 保存每个用户渲染以后 JSX 的数组
+        // for (let user of users) {
+        //     // 循环每个用户，构建 JSX，push 到数组中
+        //     usersElements.push(
+        //         <div>
+        //             <div>姓名：{user.username}</div>
+        //             <div>年龄：{user.age}</div>
+        //             <div>性别：{user.gender}</div>
+        //             <hr/>
+        //         </div>
+        //     )
+        // }
+        // console.log(usersElements)
+        //
+        // return (
+        //     <div>{usersElements}</div>
+        // )
+
+        // 方法二：使用 map 渲染列表数据
+        // return(
+        //     <div>
+        //         {users.map((user) => {
+        //             return (
+        //                 <div>
+        //                     <div>姓名：{user.username}</div>
+        //                     <div>年龄：{user.age}</div>
+        //                     <div>性别：{user.gender}</div>
+        //                     <hr />
+        //                 </div>
+        //             )
+        //         })}
+        //     </div>
+        // )
+
+        // 方法三：把负责展示用户数据的 JSX 结构抽离成一个组件 User ，并且通过 props 把 user 数据作为组件的配置参数传进去
+        return (
+            <div>
+                {/*在实际项目当中，如果你的数据顺序可能发生变化，标准做法是最好是后台数据返回的 id 作为列表元素的 key。*/}
+                {users.map((user, i) => <User key={i} user={user}/>)}
+            </div>
+        )
+    }
 }
 
 ReactDOM.render(
-    <HelloWorld msg={'Hello World'}/>,
+    <Index/>,
     document.getElementById('root')
 );
