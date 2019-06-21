@@ -1,9 +1,11 @@
-import React, {Component} from 'react'
+import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 
 class Comment extends Component {
     static propTypes = {
-        comment: PropTypes.object.isRequired
+        comment: PropTypes.object.isRequired,
+        onDeleteComment: PropTypes.func,
+        index: PropTypes.number
     }
 
     constructor() {
@@ -19,6 +21,12 @@ class Comment extends Component {
         )
     }
 
+    // 组件被卸载（删除评论时）
+    componentWillUnmount() {
+        clearInterval(this._timer);
+    }
+
+    // 更新时间
     _updateTimeString() {
         const comment = this.props.comment
         const duration = (+Date.now() - comment.createdTime) / 1000
@@ -29,19 +37,40 @@ class Comment extends Component {
         })
     }
 
-    componentWillUnmount() {
-        clearInterval(this._timer);
+    // 允许用``输入代码块；转义HTML标签，防止XSS漏洞
+    _getProcessedContent (content) {
+        return content
+            .replace(/&/g, "&amp;")
+            .replace(/</g, "&lt;")
+            .replace(/>/g, "&gt;")
+            .replace(/"/g, "&quot;")
+            .replace(/'/g, "&#039;")
+            .replace(/`([\S\s]+?)`/g, '<code>$1</code>')
+    }
+
+    handleDeleteComment () {
+        if (this.props.onDeleteComment) {
+            this.props.onDeleteComment(this.props.index)
+        }
     }
 
     render() {
+        const comment = this.props.comment
         return (
             <div className='comment'>
                 <div className='comment-user'>
-                    <span>{this.props.comment.username} </span>：
+                    <span>{comment.username} </span>：
                 </div>
-                <p>{this.props.comment.content}</p>
+                {/*<p>{comment.content}</p>*/}
+                <p dangerouslySetInnerHTML={{
+                    __html: this._getProcessedContent(comment.content)
+                }} />
                 <span className='comment-createdtime'>
                   {this.state.timeString}
+                </span>
+                <span className='comment-delete'
+                      onClick={this.handleDeleteComment.bind(this)}>
+                  删除
                 </span>
             </div>
         )

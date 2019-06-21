@@ -1,25 +1,3 @@
-Skip to content
-
-Search or jump to…
-
-Pull requests
-Issues
-Marketplace
-Explore
-
-@hafly
-Watch 7
-Star 221  Fork 401 huzidaha/react-naive-book-examples
-Code  Issues 5  Pull requests 0  Projects 0  Wiki  Security  Insights
-Branch: master
-react-naive-book-examples/comment-app/src/index.css
-Find file Copy path
-@huzidaha huzidaha add examples
-710d3d4 on 9 Mar 2017
-1 contributor
-105 lines (89 sloc)  1.56 KB
-RawBlameHistory
-
 body {
   margin: 0;
   padding: 0;
@@ -104,6 +82,7 @@ body {
 
 /* 评论组件样式 */
 .comment {
+  position: relative;
   display: flex;
   border-bottom: 1px solid #f1f1f1;
   margin-bottom: 10px;
@@ -115,12 +94,40 @@ body {
   flex-shrink: 0;
 }
 
-.comment span {
+.comment-username {
   color: #00a3cf;
   font-style: italic;
+}
+
+.comment-createdtime {
+  padding-right: 5px;
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  padding: 5px;
+  font-size: 12px;
+}
+
+.comment:hover .comment-delete {
+  color: #00a3cf;
+}
+
+.comment-delete {
+  position: absolute;
+  right: 0;
+  top: 0;
+  color: transparent;
+  font-size: 12px;
+  cursor: pointer;
 }
 
 .comment p {
   margin: 0;
   /*text-indent: 2em;*/
+}
+
+code {
+  border: 1px solid #ccc;
+  background: #f9f9f9;
+  padding: 0px 2px;
 }
