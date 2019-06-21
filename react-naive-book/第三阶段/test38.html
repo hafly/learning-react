@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0">
+    <meta name="renderer" content="webkit">
+    <title>动手实现 React-redux（三）：connect 和 mapStateToProps</title>
+</head>
+<body>
+<!--重难点-->
+<!--
+我们来观察一下刚写下的这几个组件，可以轻易地发现它们有两个重大的问题：
+1.有大量重复的逻辑：它们基本的逻辑都是，取出 context，取出里面的 store，然后用里面的状态设置自己的状态，这些代码逻辑其实都是相同的。
+2.对 context 依赖性过强：这些组件都要依赖 context 来取数据，使得这个组件复用性基本为零。
+想一下，如果别人需要用到里面的 ThemeSwitch 组件，但是他们的组件树并没有 context 也没有 store，他们没法用这个组件了。
+-->
+<!--可以把一些可复用的逻辑放在高阶组件当中，高阶组件包装的新组件和原来组件之间通过 props 传递信息，减少代码的重复程度。-->
+
+<!--我们需要高阶组件帮助我们从 context 取数据，我们也需要写 Dumb 组件帮助我们提高组件的复用性。
+所以我们尽量多地写 Dumb 组件，然后用高阶组件把它们包装一层，高阶组件和 context 打交道，把里面数据取出来通过 props 传给 Dumb 组件。-->
+
+<!--我们把这个高阶组件起名字叫 connect，因为它把 Dumb 组件和 context 连接-->
+</body>
+</html>
