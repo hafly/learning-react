@@ -9,26 +9,26 @@ class CommentInput extends Component {
         }
     }
 
-    componentWillMount () {
+    componentWillMount() {
         this._loadUsername()
     }
 
-    componentDidMount () {
+    componentDidMount() {
         this.textarea.focus()
     }
 
-    _loadUsername () {
+    _loadUsername() {
         const username = localStorage.getItem('username')
         if (username) {
-            this.setState({ username })
+            this.setState({username})
         }
     }
 
-    _saveUsername (username) {
+    _saveUsername(username) {
         localStorage.setItem('username', username)
     }
 
-    handleUsernameBlur (event) {
+    handleUsernameBlur(event) {
         this._saveUsername(event.target.value)
     }
 
@@ -50,7 +50,11 @@ class CommentInput extends Component {
     handleSubmit() {
         if (this.props.onSubmit) {
             const {username, content} = this.state
-            this.props.onSubmit({username, content})
+            this.props.onSubmit({
+                username,
+                content,
+                createdTime: +new Date()
+            })
         }
         this.setState({content: ''});
     }
