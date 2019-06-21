@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0">
+    <meta name="renderer" content="webkit">
+    <title>更新阶段的组件生命周期</title>
+</head>
+<body>
+<!--除了挂载阶段，还有一种“更新阶段”。说白了就是 setState 导致 React.js 重新渲染组件并且把组件的变化应用到 DOM 元素上的过程，这是一个组件的变化过程。
+而 React.js 也提供了一系列的生命周期函数可以让我们在这个组件更新的过程执行一些操作。-->
+
+<!--更新阶段的组件生命周期：
+1.shouldComponentUpdate(nextProps, nextState)：你可以通过这个方法控制组件是否重新渲染。如果返回 false 组件就不会重新渲染。这个生命周期在 React.js 性能优化上非常有用。
+2.componentWillReceiveProps(nextProps)：组件从父组件接收到新的 props 之前调用。
+3.componentWillUpdate()：组件开始重新渲染之前调用。
+4.componentDidUpdate()：组件重新渲染并且把更改变更到真实的 DOM 以后调用。-->
+</body>
+</html>
