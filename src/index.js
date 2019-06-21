@@ -3,41 +3,43 @@ import ReactDOM from 'react-dom';
 import './index.css';
 
 class LikeButton extends Component {
+    // 传入默认配置，render中将不用判断
+    // static defaultProps = {
+    //     likedText: '取消',
+    //     unlikedText: '点赞'
+    // }
+
     constructor() {
         super();
         this.state = {
-            name: 'Tom',
             isLiked: false
         };
-        // 在 constructor 中绑定
-        // this.handleClickOnLikeButton = this.handleClickOnLikeButton.bind(this);
     }
 
     handleClickOnLikeButton() {
-        console.log(this.state.isLiked)
-        // 当我们要改变组件的状态的时候，不能直接用 this.state = xxx 这种方式来修改，如果这样做 React.js 就没办法知道你修改了组件的状态，它也就没有办法更新页面。
         this.setState({
             isLiked: !this.state.isLiked
         });
-        // React.js 并不会马上修改 state。
-        console.log(this.state.isLiked)
 
-        // 接受函数参数
-        this.setState((prevState) => {
-            console.log(prevState);
-            return {name: prevState.name + 1}
-        });
+        // 触发props传进来的事件
+        if (this.props.onClick) {
+            this.props.onClick()
+        }
     }
 
     render() {
-        // 多个 setState 只渲染一次
-        // 消息队列的同一个消息中的 setState 会自动合并，只会渲染一次
-        console.log('渲染一次');
+        // 让组件能适应不同场景下的需求，我们就要让组件具有一定的“可配置”性。
+        // React.js 的 props 就可以帮助我们达到这个效果。
+        const likedText = this.props.likedText || '取消';
+        const unlikedText = this.props.unlikedText || '点赞';
+
+        // const wordings = this.props.wordings || {
+        //     likedText: '取消',
+        //     unlikedText: '点赞'
+        // }
         return (
-            // onClick={(e) => this.handleClick(e)}
-            // 也可以使用箭头函数绑定每次都会创建不同的回调函数，大多情况下没问题。但如果该回调函数作为prop传入子组件时，这些组件可能会进行额外的重新渲染。
             <button onClick={this.handleClickOnLikeButton.bind(this)}>
-                {this.state.isLiked ? '取消' : '点赞'} 👍
+                {this.state.isLiked ? likedText : unlikedText} 👍
             </button>
         )
     }
@@ -45,9 +47,12 @@ class LikeButton extends Component {
 
 class Index extends Component {
     render() {
+        // 那么怎么把 props 传进去呢？在使用一个组件的时候，可以把参数放在标签的属性当中，所有的属性都会作为 props 对象的键值
         return (
             <div>
-                <LikeButton/>
+                <LikeButton likedText='已赞' unlikedText='赞'
+                            onClick={() => console.log('Click on like button!')}/>
+                {/*<LikeButton wordings={{likedText: '已赞', unlikedText: '赞'}} />*/}
             </div>
         )
     }
