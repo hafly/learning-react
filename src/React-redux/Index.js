@@ -1,5 +1,5 @@
 import React, {Component} from 'react'
-import PropTypes from 'prop-types'
+import {Provider} from './react-redux'
 import Header from './Header'
 import Content from './Content'
 
@@ -30,23 +30,14 @@ const themeReducer = (state, action) => {
 
 const store = createStore(themeReducer)
 
-class Index extends Component {
-    static childContextTypes = {
-        store: PropTypes.object
-    }
-
-    getChildContext() {
-        return {store}
-    }
-
+export default class Index extends Component {
     render() {
         return (
-            <div>
+            <Provider store={store}>
                 <Header/>
                 <Content/>
-            </div>
+            </Provider>
         )
     }
 }
 
-export default Index;
