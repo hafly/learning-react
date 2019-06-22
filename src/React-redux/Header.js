@@ -19,6 +19,4 @@ const mapStateToProps = (state) => {
         themeColor: state.themeColor
     }
 }
-Header = connect(mapStateToProps)(Header)
-
-export default Header
+export default connect(mapStateToProps)(Header)

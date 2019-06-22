@@ -17,6 +17,7 @@ import PropTypes from 'prop-types'
 //     return Connect
 // }
 
+// 高阶组件。Connect 会去 context 里面取出 store。现在要把 store 里面的数据取出来通过 props 传给 WrappedComponent。
 export const connect = (mapStateToProps) => (WrappedComponent) => {
     class Connect extends Component {
         static contextTypes = {

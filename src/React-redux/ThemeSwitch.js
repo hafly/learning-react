@@ -38,6 +38,4 @@ const mapStateToProps = (state) => {
         themeColor: state.themeColor
     }
 }
-ThemeSwitch = connect(mapStateToProps)(ThemeSwitch)
-
-export default ThemeSwitch
+export default connect(mapStateToProps)(ThemeSwitch)
